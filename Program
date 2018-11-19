@@ -1,0 +1,151 @@
+using System;
+using System.Collections.Generic;
+
+namespace OOP_in_Csharp
+{
+    class Program
+    {
+        public static void Main(string[] args)
+        {
+            //list of Arrays
+            List<Computer> network = new List<Computer>();
+
+            //Creating the object
+            Server servidor = new Server("servidor", "Dell", "Windows", false, "WEB Server", "10.0.0.10");
+            Server servidor2 = new Server("servidor2", "Mac", "Linux", false, "WEB Server", "10.0.0.11");
+            Server servidor3 = new Server("servidor3", "Acer", "Windows", false, "WEB Server", "10.0.0.12");
+            Computer myFirstComp = new Computer("myFirstComp", "Lenovo", "Linux", false);
+            Computer mySecondComp = new Computer("mySecondComp", "Toshiba", "Windows", false);
+            Computer myThirdComp = new Computer("myThirdComp", "Asus", "Linux", false);
+
+            //Add the computer to the Array
+            network.Add(servidor);
+            network.Add(servidor2);
+            network.Add(servidor3);
+            network.Add(myFirstComp);
+            network.Add(mySecondComp);
+            network.Add(myThirdComp);
+
+            Console.WriteLine("--------------------------------------");
+
+            //Swiching On the Computers
+            for (int i = 0; i < network.Count; i++)
+            {
+                network[i].StartComputer();
+            }
+
+            Console.WriteLine("--------------------------------------");
+
+            int compsInNetwork = Computer.CountComps();
+            int stateOfComputer = Computer.CountState();
+            Console.WriteLine("We have {0} computers in our network.",
+                   compsInNetwork);
+            Console.WriteLine("We have {0} computer connected", stateOfComputer);
+
+            Console.WriteLine("--------------------------------------");
+
+            //Searching the IP
+            Console.WriteLine("Write the IP to search: ");
+            string searchIp = Console.ReadLine();
+
+            //iterating over the List network
+            foreach (Computer comp in network)
+            {
+                if (comp.SwitchedOn)
+                {
+                    Console.Write("{0}\t{1}\t\t{2}\t", comp.Ipaddress, comp.OperatingSystem, comp.Make);
+                    Type type = comp.GetType();
+                    string stringType = type.ToString();
+                    int pos = stringType.IndexOf('.');
+                    Console.Write(stringType.Substring(pos + 1, 4));
+
+                    if (stringType.Substring(pos + 1, 4) == "Serv")
+                    {
+                        System.Console.WriteLine("\t{0}", servidor.Destination);
+                    }
+                    else
+                        Console.WriteLine();
+
+
+                    //Console.WriteLine(comp.GetType());
+                }
+            }
+
+            Console.WriteLine("--------------------------------------");
+            myFirstComp.ComputerPing(network, searchIp);
+            mySecondComp.ShutDownComputer();
+            servidor.ShutDownComputer();
+
+            //iterating over the list network		
+            foreach (Computer comp in network)
+            {
+                if (comp.SwitchedOn)
+                {
+                    Console.WriteLine("{0}\t{1}\t\t{2}", comp.Ipaddress, comp.OperatingSystem, comp.Make);
+                }
+            }
+            Console.WriteLine("--------------------------------------------------------------------\n");
+
+            //Test of ping to other computers
+
+            Random rnd = new Random();
+            double answer;
+
+            Computer myComp = myFirstComp;
+            String pingTo = "10.0.0.14";
+
+            bool found = false;
+            foreach (Computer comp in network)
+            //this can be encapsulated
+            {
+                if ((pingTo == comp.Ipaddress) && (comp.SwitchedOn == true))
+                {
+                    found = true;
+                    break;
+                }
+            } // the end of the loop
+
+
+            if (found)
+
+            {
+                for (int i = 5; i < 15; i++)
+                {
+                    answer = (float)(rnd.Next(1, 100)) / 100;
+                    Console.WriteLine("64 bytes from {0} icmp_seq={1} ttl=64 time={2} ms", myComp.Ipaddress, i.ToString(), answer.ToString());
+                }
+            }
+            else
+            {
+                Console.WriteLine("Adress {0} not found !!! ", pingTo);
+            }
+            //the end of pinging
+
+            Console.WriteLine("--------------------------------------");
+
+            //Information about the computers
+            Console.WriteLine("comp no.1 ({0}) with {1} installed. " +
+                   "It's IP address is {2}. {3}",
+                   myComp.Make, myComp.OperatingSystem, myComp.Ipaddress, myComp.IsSwitched());
+
+            Console.WriteLine("comp no.2 ({0}) with {1} installed. " +
+                   "It's IP address is {2}. {3}",
+                   mySecondComp.Make, mySecondComp.OperatingSystem, mySecondComp.Ipaddress, mySecondComp.IsSwitched());
+
+            Console.WriteLine("comp no.3 ({0}) with {1} installed. " +
+                   "It's IP address is {2}. {3}",
+                   myThirdComp.Make, myThirdComp.OperatingSystem, myThirdComp.Ipaddress, myThirdComp.IsSwitched());
+
+            Console.WriteLine("--------------------------------------");
+
+            Computer.ShowComputers(network);
+
+            Console.WriteLine("--------------------------------------");
+
+            //Computer.PingToComputer(network, myComp, "10.0.0.14");
+
+            Console.Read();
+
+        }
+    }
+}
