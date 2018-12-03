@@ -7,3 +7,4 @@
 * Use Case Diagram
 * Component Diagram
 * Activity Diagram
+* Project Computer Requirements
